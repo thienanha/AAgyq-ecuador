@@ -1,0 +1,64 @@
+---
+title: "Medium/Low SE Pupae"
+author: "Thien-An Ha"
+date: "May 2, 2020"
+output: html_document
+---
+
+```{R}
+# read in data
+pupaemedcsv <- read.csv("~/Berkeley/Ecuador/GYQAaPupaeMedSE.csv")
+pupaelowcsv <- read.csv("~/Berkeley/Ecuador/GYQAaPupaeLowSE.csv")
+```
+
+
+```{r}
+# Run all combinations with MEDIUM se status
+nb_med <- glm.nb(formula = PupaeIndex ~ NumChildren + NumAdults + InterruptFreq + 
+                     TrashCollectPerWk + LargeSolidColl + SewerConn + FumigLWs + 
+                     AbateLWs + BiolarvLWs + CanopyUse + ProtectMesh + VolCriadero + WaterVol + 
+                      week0 + week1 + week2, data = pupaemedcsv, na.action = "na.pass")
+
+combinations_med <- dredge(nb_med)
+head(combinations_med[order(combinations_med$AICc, decreasing = FALSE)])
+```
+
+```{r}
+# Run all combinations with LOW se status
+nb_low <- glm.nb(formula = PupaeIndex ~ NumChildren + NumAdults + InterruptFreq + 
+                     TrashCollectPerWk + LargeSolidColl + SewerConn + FumigLWs + 
+                     AbateLWs + BiolarvLWs + CanopyUse + ProtectMesh + VolCriadero + WaterVol + 
+                      week0 + week1 + week2, data = pupaelowcsv, na.action = "na.pass")
+
+combinations_low <- dredge(nb_low)
+head(combinations_low[order(combinations_low$AICc, decreasing = FALSE)])
+```
+
+
+```{r}
+# run cross validation to find lowest prediction error for MED se status
+cv_med<- glmregNB(PupaeIndex ~ BiolarvLWs + CanopyUse + NumChildren + WaterVol + week2, data = pupaemedcsv, weights = NULL, nfolds = 10)
+
+
+vec <- rep(NA, 100)
+for(i in 1:100){
+  vec[i] <- sqrt(cv.glm(data = pupaemedcsv, glmfit = cv_med, K = 10)$delta) 
+  # a function that I want to run 100 times
+}
+ mean(vec, trim = 0)
+```
+
+
+```{r}
+# run cross validation to find lowest prediction error for LOW se status
+cv_low<- glmregNB(PupaeIndex ~ FumigLWs + LargeSolidColl +  week1, data = pupaelowcsv, weights = NULL, nfolds = 10)
+
+
+vec <- rep(NA, 100)
+for(i in 1:100){
+  vec[i] <- sqrt(cv.glm(data = pupaelowcsv, glmfit = cv_low, K = 10)$delta) 
+  # a function that I want to run 100 times
+}
+ mean(vec, trim = 0)
+```
+
