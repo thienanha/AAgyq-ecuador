@@ -13,7 +13,7 @@ nb_fit <- MASS::glm.nb(formula = PupaeIndex ~ NumChildren + NumAdults + Interrup
                          TrashCollectPerWk + LargeSolidColl + SewerConn + FumigLWs + 
                          AbateLWs + BiolarvLWs + CanopyUse + ProtectMesh + VolCriadero + WaterVol + 
                          week0 + week1 + week2, data = pupaecsv, na.action = "na.pass")
-combinations <- MuMIn::dredge(nb_fit)
+combinations <- MuMIn::pdredge(nb_fit)
 
 
 vars_of_interest <- colnames(combinations)[!is.na(combinations[1,])]
