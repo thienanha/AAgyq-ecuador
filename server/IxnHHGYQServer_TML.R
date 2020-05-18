@@ -4,7 +4,7 @@ library(MuMIn)
 library(boot)
 library(parallel)
 
-pupaecsv <- read.csv("GYQPupaePrecipINC.csv", header = T)
+pupaecsv <- read.csv("GYQAaPupaeHHIMP.csv", header = T)
 
 
 # Run all combinations 

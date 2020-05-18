@@ -2,16 +2,18 @@ library(mpath)
 library(MASS)
 library(MuMIn)
 library(boot)
+
+
 #check out pdredge for server
 
-pupaecsv <- read.csv("~/Berkeley/Ecuador/MPH Capstone/AAgyq-ecuador/server/GYQPupaePrecipINC.csv", header = T)
+pupaecsv <- read.csv("~/Berkeley/Ecuador/MPH Capstone/AAgyq-ecuador/server/GYQAaPupaeHHIMP.csv", header = T)
 
 
 # Run all combinations 
 nb_fit <- MASS::glm.nb(formula = PupaeIndex ~ NumChildren + NumAdults + InterruptFreq + 
                          Illiteracy + Unemployment + Overcrowding +
-                         #TrashCollectPerWk + LargeSolidColl + SewerConn + 
-                         #AbateLWs + BiolarvLWs + CanopyUse + WaterVol + 
+                         TrashCollectPerWk + LargeSolidColl + SewerConn + 
+                         AbateLWs + BiolarvLWs + CanopyUse + WaterVol + 
                          week0 + week1 + week2, data = pupaecsv, na.action = "na.pass")
 
 combinations <- MuMIn::dredge(nb_fit)
